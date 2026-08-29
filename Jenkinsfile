@@ -1,12 +1,12 @@
 pipeline {
     agent {
         docker {
-            image 'python:3.9-slim-buster'
+            image 'python:3.9-slim-bullseye'
             args '-u root'
         }
     }
     triggers {
-        pollSCM('*/2 * * * *')
+        pollSCM('H/2 * * * *')
     }
     stages {
         stage('Build') {
