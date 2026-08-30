@@ -39,13 +39,7 @@ pipeline {
                     sh 'chmod +x scripts/deploy_render.sh'
                     sh './scripts/deploy_render.sh'
                 }
-                sh 'pip install --break-system-packages flask'
-                sh '''
-                    python3 sources/app.py &
-                    APP_PID=$!
-                    sleep 60
-                    kill $APP_PID
-                '''
+                sleep 60
             }
         }
     }
