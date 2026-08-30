@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'python:3.9-slim-bullseye'
-            args '-u root'
+            args '-u root --volumes-from jenkins-blueocean'
         }
     }
     triggers {
