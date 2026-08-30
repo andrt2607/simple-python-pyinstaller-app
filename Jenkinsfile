@@ -25,15 +25,12 @@ pipeline {
                 }
             }
         }
-        stage('Deliver') {
+        stage('Push Image GHCR') {
+            agent { label 'docker' }
             steps {
-                sh 'apt-get update && apt-get install -y binutils'
-                sh 'pip install pyinstaller'
-                sh 'pyinstaller --onefile sources/add2vals.py'
-            }
-            post {
-                success {
-                    archiveArtifacts 'dist/add2vals'
+                withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GITHUB_ACTOR', passwordVariable: 'GITHUB_TOKEN')]) {
+                    sh 'chmod +x scripts/deploy_ghcr.sh'
+                    sh './scripts/deploy_ghcr.sh'
                 }
             }
         }
@@ -44,6 +41,10 @@ pipeline {
         }
         stage('Deploy') {
             steps {
+                withCredentials([string(credentialsId: 'render-deploy-hook-python', variable: 'RENDER_DEPLOY_HOOK')]) {
+                    sh 'chmod +x scripts/deploy_render.sh'
+                    sh './scripts/deploy_render.sh'
+                }
                 sh 'pip install flask'
                 sh '''
                     python3 sources/app.py &
