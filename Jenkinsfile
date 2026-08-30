@@ -1,10 +1,5 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.9-slim-bullseye'
-            args '-u root --volumes-from jenkins-blueocean'
-        }
-    }
+    agent any
     triggers {
         pollSCM('H/2 * * * *')
     }
@@ -16,8 +11,8 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh 'pip install pytest'
-                sh 'py.test --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
+                sh 'pip install --break-system-packages pytest'
+                sh 'python3 -m pytest --verbose --junit-xml test-reports/results.xml sources/test_calc.py'
             }
             post {
                 always {
@@ -26,7 +21,6 @@ pipeline {
             }
         }
         stage('Push Image GHCR') {
-            agent any
             steps {
                 withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GITHUB_ACTOR', passwordVariable: 'GITHUB_TOKEN')]) {
                     sh 'chmod +x scripts/deploy_ghcr.sh'
@@ -45,7 +39,7 @@ pipeline {
                     sh 'chmod +x scripts/deploy_render.sh'
                     sh './scripts/deploy_render.sh'
                 }
-                sh 'pip install flask'
+                sh 'pip install --break-system-packages flask'
                 sh '''
                     python3 sources/app.py &
                     APP_PID=$!
