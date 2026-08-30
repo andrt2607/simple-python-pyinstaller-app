@@ -37,5 +37,23 @@ pipeline {
                 }
             }
         }
+        stage('Manual Approval') {
+            steps {
+                input message: 'Lanjutkan ke tahap Deploy?'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh 'pip install flask'
+                sh '''
+                    python3 sources/app.py &
+                    APP_PID=$!
+                    sleep 3
+                    curl -sf http://localhost:5000/ -o /dev/null
+                    sleep 57
+                    kill $APP_PID
+                '''
+            }
+        }
     }
 }

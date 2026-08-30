@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add2Vals</title>
+    <style>
+        body { font-family: sans-serif; max-width: 400px; margin: 60px auto; }
+        input, button { font-size: 1rem; padding: 6px; margin: 4px 0; width: 100%; box-sizing: border-box; }
+        .result { margin-top: 20px; font-size: 1.2rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Add2Vals</h1>
+    <form method="post">
+        <label>Value 1</label>
+        <input type="text" name="value1" required>
+        <label>Value 2</label>
+        <input type="text" name="value2" required>
+        <button type="submit">Calculate</button>
+    </form>
+    {% if result is not none %}
+    <div class="result">The result is {{ result }}</div>
+    {% endif %}
+</body>
+</html>
