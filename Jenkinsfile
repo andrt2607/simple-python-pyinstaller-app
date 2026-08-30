@@ -26,6 +26,7 @@ pipeline {
             }
         }
         stage('Push Image GHCR') {
+            agent any
             steps {
                 withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GITHUB_ACTOR', passwordVariable: 'GITHUB_TOKEN')]) {
                     sh 'chmod +x scripts/deploy_ghcr.sh'
