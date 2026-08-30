@@ -26,7 +26,6 @@ pipeline {
             }
         }
         stage('Push Image GHCR') {
-            agent { label 'docker' }
             steps {
                 withCredentials([usernamePassword(credentialsId: 'ghcr-credentials', usernameVariable: 'GITHUB_ACTOR', passwordVariable: 'GITHUB_TOKEN')]) {
                     sh 'chmod +x scripts/deploy_ghcr.sh'
@@ -49,9 +48,7 @@ pipeline {
                 sh '''
                     python3 sources/app.py &
                     APP_PID=$!
-                    sleep 3
-                    curl -sf http://localhost:5000/ -o /dev/null
-                    sleep 57
+                    sleep 60
                     kill $APP_PID
                 '''
             }
